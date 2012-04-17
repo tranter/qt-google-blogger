@@ -8,7 +8,7 @@
 OAuth2::OAuth2(QWidget* parent)
 {
     m_strEndPoint = "https://accounts.google.com/o/oauth2/auth";
-    m_strScope = "https://www.googleapis.com/auth/books";
+    m_strScope = "https://www.googleapis.com/auth/blogger";
     m_strClientID = "YOUR_CLIENT_ID_HERE";
     m_strRedirectURI = "YOUR_REDIRECT_URI_HERE";
     m_strResponseType = "token";
