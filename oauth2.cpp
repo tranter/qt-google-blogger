@@ -13,8 +13,8 @@ OAuth2::OAuth2(QWidget* parent)
     m_strRedirectURI = "YOUR_REDIRECT_URI_HERE";
     m_strResponseType = "token";
 
-    m_strCompanyName = "Google"; //You company here
-    m_strAppName = "Test Google API Client"; //Your application name here
+    m_strCompanyName = "ICS"; //You company here
+    m_strAppName = "QtBlogger"; //Your application name here
 
     m_pLoginDialog = new LoginDialog(parent);
     m_pParent = parent;
