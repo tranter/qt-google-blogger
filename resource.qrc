@@ -4,5 +4,6 @@
         <file>images/refresh.png</file>
         <file>images/back.png</file>
         <file>images/forward.png</file>
+        <file>images/login.png</file>
     </qresource>
 </RCC>
