@@ -15,7 +15,7 @@ INCLUDEPATH += ../qjson/include
 }
 
 win* {
-LIBS += ../qjson/build/lib/qjson0.lib
+LIBS += ../qjson/build/lib/qjson0.dll
 INCLUDEPATH += ../qjson/include
 }
 

@@ -16,11 +16,6 @@ Form::Form(QWidget *parent) :
 
     m_pOAuth2 = new OAuth2(this);
 
-    m_pOAuth2->setScope("https://www.googleapis.com/auth/blogger");
-    m_pOAuth2->setClientID("YOUR_CLIENT_ID_HERE");
-    m_pOAuth2->setRedirectURI("YOUR_REDIRECT_URI_HERE");
-    m_pOAuth2->setCompanyName("ICS");
-    m_pOAuth2->setAppName("Google API Blogger Client");
 
     connect(m_pOAuth2, SIGNAL(loginDone()), this, SLOT(onLoginDone()));
     connect(&m_manager, SIGNAL(sigErrorOccured(QString)),this,SLOT(onErrorOccured(QString)));
