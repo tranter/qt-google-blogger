@@ -1,7 +1,6 @@
 #include "logindialog.h"
 #include "ui_logindialog.h"
 
-#include <QDebug>
 #include <QWebView>
 
 LoginDialog::LoginDialog(QWidget *parent) :
@@ -19,7 +18,6 @@ LoginDialog::~LoginDialog()
 
 void LoginDialog::urlChanged(const QUrl &url)
 {
-    qDebug() << "URL =" << url;
     QString str = url.toString();
     if(str.indexOf("access_token") != -1)
     {
@@ -42,7 +40,6 @@ QString LoginDialog::accessToken()
 {
     return m_strAccessToken;
 }
-
 
 void LoginDialog::setLoginUrl(const QString& url)
 {

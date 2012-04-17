@@ -9,19 +9,22 @@ QT       += core gui webkit network
 TARGET = google_api_blogger_clent
 TEMPLATE = app
 
+INCLUDEPATH += ../qjson/include
+
 linux* {
 LIBS += ../qjson/build/lib/libqjson.so
-INCLUDEPATH += ../qjson/include
 }
 
-win* {
+win32-g++ {
 LIBS += ../qjson/build/lib/qjson0.dll
-INCLUDEPATH += ../qjson/include
+}
+
+win32-msvc* {
+LIBS += ../qjson/build/lib/qjson0.lib
 }
 
 macx* {
 LIBS += -F../qjson/build/lib -framework qjson
-INCLUDEPATH += ../qjson/include
 }
 
 SOURCES += main.cpp\

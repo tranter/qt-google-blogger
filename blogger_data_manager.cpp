@@ -1,4 +1,3 @@
-#include <QDebug>
 #include <QJson/Parser>
 
 #include "blogger_data_manager.h"
@@ -15,57 +14,46 @@ blogger_data_manager::blogger_data_manager()
  */
 void blogger_data_manager::getBlogsList(const QString& access_token)
 {
-    qDebug() <<  __FUNCTION__;
     QString s = QString("https://www.googleapis.com/blogger/v2/users/self/blogs?access_token=%1").arg(access_token);
-
     m_pNetworkAccessManager->get(QNetworkRequest(QUrl(s)));
 }
+
 void blogger_data_manager::getBlogPosts(const QString& access_token)
 {
-    qDebug() <<  __FUNCTION__;
     if (m_idBlog < 0) {
         return;
     }
     QString s = QString("https://www.googleapis.com/blogger/v2/blogs/%1/posts?access_token=%2").arg(m_idBlog).arg(access_token);
-
     m_pNetworkAccessManager->get(QNetworkRequest(QUrl(s)));
 }
+
 void blogger_data_manager::getPostComments(const QString& access_token, qlonglong idPost)
 {
-    qDebug() <<  __FUNCTION__ << idPost;
     if (m_idBlog < 0) {
         return;
     }
     QString s = QString("https://www.googleapis.com/blogger/v2/blogs/%1/posts/%2/comments?access_token=%3").arg(m_idBlog).arg(idPost).arg(access_token);
-
     m_pNetworkAccessManager->get(QNetworkRequest(QUrl(s)));
 }
+
 void blogger_data_manager::getBlogPages(const QString& access_token)
 {
-    qDebug() <<  __FUNCTION__;
     if (m_idBlog < 0) {
         return;
     }
     QString s = QString("https://www.googleapis.com/blogger/v2/blogs/%1/pages?access_token=%2").arg(m_idBlog).arg(access_token);
-
     m_pNetworkAccessManager->get(QNetworkRequest(QUrl(s)));
 }
+
 void blogger_data_manager::getBlogUsers(const QString& access_token)
 {
-    qDebug() <<  __FUNCTION__;
-//    if (m_idBlog < 0) {
-//        return;
-//    }
     QString s = QString("https://www.googleapis.com/blogger/v2/users/self?access_token=%1").arg(access_token);
-
     m_pNetworkAccessManager->get(QNetworkRequest(QUrl(s)));
 }
+
 void blogger_data_manager::replyFinished(QNetworkReply *reply)
 {
-    qDebug() <<  __FUNCTION__;
     QString json = reply->readAll();
-    qDebug() << "Reply = " << json;
-    qDebug() << "URL = " << reply->url();
 
     if (json.length() == 0) {
         return;
@@ -89,7 +77,6 @@ void blogger_data_manager::replyFinished(QNetworkReply *reply)
 
     if (result.toMap()["kind"] == "blogger#blogList") {
         m_blogs = result.toMap()["items"].toList();
-//        qDebug() << "Reply = " << json;
         emit sigBlogsListReady();
         return;
     } else if (result.toMap()["kind"] == "blogger#postList") {
@@ -97,7 +84,6 @@ void blogger_data_manager::replyFinished(QNetworkReply *reply)
         emit sigPostsListReady();
         return;
     } else if (result.toMap()["kind"] == "blogger#commentList") {
-//        qDebug() << "Reply = " << json;
         m_comments = result.toMap()["items"].toList();
         emit sigCommentsListReady();
         return;
@@ -107,7 +93,6 @@ void blogger_data_manager::replyFinished(QNetworkReply *reply)
         return;
     } else if (result.toMap()["kind"] == "blogger#userList") {
         m_users = result.toMap()["items"].toList();
-//        qDebug() << "Reply = " << json;
         emit sigUsersListReady();
         return;
     }

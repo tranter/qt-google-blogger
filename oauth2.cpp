@@ -1,5 +1,4 @@
 #include "oauth2.h"
-#include <QDebug>
 #include <QApplication>
 #include "logindialog.h"
 #include <QSettings>
@@ -16,9 +15,8 @@ OAuth2::OAuth2(QWidget* parent)
     m_strCompanyName = "ICS"; //You company here
     m_strAppName = "QtBlogger"; //Your application name here
 
-    m_pLoginDialog = new LoginDialog(parent);
+    m_pLoginDialog = NULL;
     m_pParent = parent;
-    connect(m_pLoginDialog, SIGNAL(accessTokenObtained()), this, SLOT(accessTokenObtained()));
 }
 
 void OAuth2::setScope(const QString& scope)
@@ -46,13 +44,10 @@ void OAuth2::setAppName(const QString& appName)
     m_strAppName = appName;
 }
 
-
-
 QString OAuth2::loginUrl()
 {
     QString str = QString("%1?client_id=%2&redirect_uri=%3&response_type=%4&scope=%5").arg(m_strEndPoint).arg(m_strClientID).
             arg(m_strRedirectURI).arg(m_strResponseType).arg(m_strScope);
-    qDebug() << "Login URL" << str;
     return str;
 }
 
@@ -68,11 +63,9 @@ bool OAuth2::isAuthorized()
 
 void OAuth2::startLogin(bool bForce)
 {
-    qDebug() << "OAuth2::startLogin";
     QSettings settings(m_strCompanyName, m_strAppName);
     QString str = settings.value("access_token", "").toString();
 
-    qDebug() << "OAuth2::startLogin, token from Settings" << str;
     if(m_strClientID == "YOUR_CLIENT_ID_HERE" || m_strRedirectURI == "YOUR_REDIRECT_URI_HERE")
     {
         QMessageBox::warning(m_pParent, "Warning",
@@ -81,9 +74,13 @@ void OAuth2::startLogin(bool bForce)
         return;
     }
 
-
     if(str.isEmpty() || bForce)
     {
+        if (m_pLoginDialog != NULL) {
+            delete m_pLoginDialog;
+        }
+        m_pLoginDialog = new LoginDialog(m_pParent);
+        connect(m_pLoginDialog, SIGNAL(accessTokenObtained()), this, SLOT(accessTokenObtained()));
         m_pLoginDialog->setLoginUrl(loginUrl());
         m_pLoginDialog->show();
     }
@@ -100,7 +97,8 @@ void OAuth2::accessTokenObtained()
     m_strAccessToken = m_pLoginDialog->accessToken();
     settings.setValue("access_token", m_strAccessToken);
     emit loginDone();
-
+    if (m_pLoginDialog != NULL) {
+        m_pLoginDialog->deleteLater();
+        m_pLoginDialog = NULL;
+    }
 }
-
-

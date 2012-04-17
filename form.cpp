@@ -1,4 +1,3 @@
-#include <QDebug>
 #include <QMessageBox>
 #include <QDateTime>
 #include <QWebHistory>
@@ -11,11 +10,8 @@ Form::Form(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Form)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
     ui->setupUi(this);
-
     m_pOAuth2 = new OAuth2(this);
-
 
     connect(m_pOAuth2, SIGNAL(loginDone()), this, SLOT(onLoginDone()));
     connect(&m_manager, SIGNAL(sigErrorOccured(QString)),this,SLOT(onErrorOccured(QString)));
@@ -38,7 +34,6 @@ Form::~Form()
 
 void Form::startLogin(bool bForce)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << bForce;
     //Now we allow to start logging in when m_oauth2.isAuthorized(). User can log in using another Google account.
     m_pOAuth2->startLogin(bForce); //this is a parent widget for a login dialog.
 }
@@ -47,7 +42,6 @@ void Form::startLogin(bool bForce)
  */
 void Form::refreshBlogs()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
     onLoginDone();
 }
 /*! \brief Start function for initialization
@@ -55,9 +49,7 @@ void Form::refreshBlogs()
  */
 void Form::onLoginDone()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__;
     //Now trying to get JSON string for bookshelves of the user.
-
     //Clear all widgets
     ui->webViewPost->setHtml("");
     ui->webViewComments->setHtml("");
@@ -69,16 +61,16 @@ void Form::onLoginDone()
     m_manager.getBlogsList(m_pOAuth2->accessToken());
     m_manager.getBlogUsers(m_pOAuth2->accessToken());
 }
+
 void Form::onErrorOccured(const QString& error)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << error;
     if(error.indexOf("Invalid Credentials") != -1)
     {
         startLogin(true);
     }
     else
     {
-        QMessageBox::warning(this, tr("Error occured"), error);
+        QMessageBox::warning(this, tr("Some error on server occured"), error);
     }
 }
 /*! \brief Handler for signal sigBlogsListReady
@@ -86,7 +78,6 @@ void Form::onErrorOccured(const QString& error)
  */
 void Form::onBlogsListReady()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") << __FUNCTION__;
     QVariantList& blogs = m_manager.getBlogs();
     QStringList list;
     for (int i=0; i<blogs.count(); i++) {
@@ -103,7 +94,6 @@ void Form::onBlogsListReady()
  */
 void Form::showBlogPosts(int pos)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") << __FUNCTION__ << pos;
     if (pos < 0) {
         return;
     }
@@ -118,7 +108,6 @@ void Form::showBlogPosts(int pos)
  */
 void Form::onPostsListReady()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") << __FUNCTION__;
     QVariantList& posts = m_manager.getPosts();
     QStringList list;
     QString sTitle;
@@ -131,10 +120,6 @@ void Form::onPostsListReady()
     }
     ui->webViewPost->setHtml("");
     ui->webViewComments->setHtml("");
-//    ui->webViewPage->setHtml("");
-//    ui->blogsListWidget->clear();
-//    ui->postsListWidget->clear();
-//    ui->pagesListWidget->clear();
 
     ui->postsListWidget->clear();
     if (list.size() > 0) {
@@ -147,7 +132,6 @@ void Form::onPostsListReady()
  */
 void Form::onPagesListReady()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") << __FUNCTION__;
     QVariantList& pages = m_manager.getPages();
     QStringList list;
     QString sTitle;
@@ -158,12 +142,7 @@ void Form::onPagesListReady()
         }
         list << sTitle;
     }
-//    ui->webViewPost->setHtml("");
-//    ui->webViewComments->setHtml("");
     ui->webViewPage->setHtml("");
-//    ui->blogsListWidget->clear();
-//    ui->postsListWidget->clear();
-//    ui->pagesListWidget->clear();
 
     ui->pagesListWidget->clear();
     if (list.size() > 0) {
@@ -179,7 +158,6 @@ void Form::onPagesListReady()
  */
 void Form::showPostContent(int pos)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") << __FUNCTION__ << pos;
     if (pos < 0) {
         return;
     }
@@ -193,10 +171,6 @@ void Form::showPostContent(int pos)
     }
     ui->webViewPost->setHtml(sContent);
     ui->webViewComments->setHtml("");
-    //    ui->webViewPage->setHtml("");
-    //    ui->blogsListWidget->clear();
-    //    ui->postsListWidget->clear();
-    //    ui->pagesListWidget->clear();
 
     //Begin download comments list for current post
     m_manager.getPostComments(m_pOAuth2->accessToken(),idPost);
@@ -207,7 +181,6 @@ void Form::showPostContent(int pos)
  */
 void Form::onCommentsListReady()
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") << __FUNCTION__;
     QVariantList& comments = m_manager.getComments();
     if (comments.size() == 0) {
         return;
@@ -225,13 +198,7 @@ void Form::onCommentsListReady()
     }
     sComment += "</font>";
 
-//    ui->webViewPost->setHtml("");
     ui->webViewComments->setHtml(sComment);
-
-//    ui->webViewPage->setHtml("");
-//    ui->blogsListWidget->clear();
-//    ui->postsListWidget->clear();
-//    ui->pagesListWidget->clear();
 }
 /*! \brief Show selected blog's page
  *
@@ -241,7 +208,6 @@ void Form::onCommentsListReady()
  */
 void Form::showPageContent(int pos)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") << __FUNCTION__ << pos;
     if (pos < 0) {
         return;
     }
@@ -257,19 +223,16 @@ void Form::showPageContent(int pos)
 
 QDateTime Form::convertToTime(const QString& str)
 {
-    qDebug() << QDateTime::currentDateTime().toString("hh:mm:ss.zzz") <<  __FUNCTION__ << str;
     QDateTime ret;
 
     int pos = str.indexOf("T");
     QString sYear = str.mid(0,4);
     QString sMonth = str.mid(5,2);
     QString sDay = str.mid(8,2);
-//    qDebug() << "sYear=" << sYear << ", sMonth=" << sMonth << ", sDay=" << sDay;
 
     QString sHour = str.mid(pos+1,2);
     QString sMin = str.mid(pos+4,2);
     QString sSec = str.mid(pos+7,2);
-//    qDebug() << "sHour=" << sHour << ", sMin=" << sMin << ", sSec=" << sSec;
 
     ret.setDate(QDate(sYear.toInt(),sMonth.toInt(),sDay.toInt()));
     ret.setTime(QTime(sHour.toInt(),sMin.toInt(),sSec.toInt()));
@@ -279,7 +242,6 @@ QDateTime Form::convertToTime(const QString& str)
 
 void Form::goBack()
 {
-    qDebug() << __FUNCTION__;
     if(ui->tabWidget->currentIndex() == 0)
     {
         QWebHistory* history = ui->webViewPost->history();
@@ -337,7 +299,6 @@ void Form::goBack()
 
 void Form::goForward()
 {
-    qDebug() << __FUNCTION__;
     if(ui->tabWidget->currentIndex() == 0)
     {
         ui->webViewPost->forward();
@@ -350,6 +311,5 @@ void Form::goForward()
     {
         ui->webViewPage->forward();
     }
-
 }
 

@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>900</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -55,6 +55,10 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionLogin">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/images/images/login.png</normaloff>:/images/images/login.png</iconset>
+   </property>
    <property name="text">
     <string>Login...</string>
    </property>
