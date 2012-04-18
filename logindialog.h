@@ -18,17 +18,22 @@ public:
     ~LoginDialog();
     void setLoginUrl(const QString& url);
     QString accessToken();
+    QString code();
 
 signals:
     void accessTokenObtained();
+    void codeObtained();
 
 private slots:
     void urlChanged(const QUrl& url);
+    void loadStarted();
+    void loadFinished(bool);
 
 
 private:
     Ui::LoginDialog *ui;
     QString m_strAccessToken;
+    QString m_strCode;
 };
 
 #endif // LOGINDIALOG_H

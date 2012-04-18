@@ -1,6 +1,7 @@
 #include <QMessageBox>
 #include <QDateTime>
 #include <QWebHistory>
+#include <QSettings>
 
 #include "form.h"
 #include "ui_form.h"
@@ -12,6 +13,10 @@ Form::Form(QWidget *parent) :
 {
     ui->setupUi(this);
     m_pOAuth2 = new OAuth2(this);
+    m_strCompanyName = "ICS";
+    m_strAppName = "QtBlogger";
+    m_pOAuth2->setCompanyName(m_strCompanyName);
+    m_pOAuth2->setAppName(m_strAppName);
 
     connect(m_pOAuth2, SIGNAL(loginDone()), this, SLOT(onLoginDone()));
     connect(&m_manager, SIGNAL(sigErrorOccured(QString)),this,SLOT(onErrorOccured(QString)));
@@ -25,10 +30,16 @@ Form::Form(QWidget *parent) :
     connect(ui->pagesListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(showPageContent(int)));
 
     QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, true);
+    // Load settings
+    m_pSettings = new QSettings(m_strCompanyName,m_strAppName);
+    m_pOAuth2->setAccessToken(m_pSettings->value("access_token").toString());
+    m_pOAuth2->setRefreshToken(m_pSettings->value("refresh_token").toString());
 }
 
 Form::~Form()
 {
+    saveSettings();
+    delete m_pSettings;
     delete ui;
 }
 
@@ -311,5 +322,11 @@ void Form::goForward()
     {
         ui->webViewPage->forward();
     }
+}
+
+void Form::saveSettings()
+{
+    m_pSettings->setValue("access_token",m_pOAuth2->accessToken());
+    m_pSettings->setValue("refresh_token",m_pOAuth2->getRefreshToken());
 }
 

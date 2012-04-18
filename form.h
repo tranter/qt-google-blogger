@@ -6,6 +6,7 @@
 #include "blogger_data_manager.h"
 
 //class blogger_data_manager;
+class QSettings;
 
 namespace Ui {
     class Form;
@@ -43,8 +44,13 @@ private:
     Ui::Form *ui;
     OAuth2* m_pOAuth2;
     blogger_data_manager m_manager;
+    QSettings* m_pSettings;
+    QString m_strCompanyName;
+    QString m_strAppName;
 
     QDateTime convertToTime(const QString& str);
+
+    void saveSettings();
 };
 
 #endif // FORM_H
