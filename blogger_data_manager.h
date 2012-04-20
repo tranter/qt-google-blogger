@@ -21,12 +21,14 @@ public:
     void getPostComments(const QString& access_token, qlonglong idPost);
     void getBlogPages(const QString& access_token);
     void getBlogUsers(const QString& access_token);
+    void getUserEmail(const QString& access_token);
 
     QVariantList& getBlogs() {return m_blogs;}
     QVariantList& getPosts() {return m_posts;}
     QVariantList& getPages() {return m_pages;}
     QVariantList& getComments() {return m_comments;}
     QVariantList& getUsers() {return m_users;}
+    QString userEmail() {return m_strUserEmail;}
 
     void setIdBlog(qlonglong id) {m_idBlog = id;}
 
@@ -37,6 +39,7 @@ signals:
     void sigPostsListReady();
     void sigCommentsListReady();
     void sigUsersListReady();
+    void sigUserEmailReady();
 
 private slots:
     void replyFinished(QNetworkReply*);
@@ -50,6 +53,8 @@ private:
 
     qlonglong m_idBlog;
     QNetworkAccessManager* m_pNetworkAccessManager;
+
+    QString m_strUserEmail;
 };
 
 #endif // BLOGGER_DATA_MANAGER_H

@@ -25,6 +25,7 @@ Form::Form(QWidget *parent) :
     connect(m_pOAuth2, SIGNAL(loginDone()), this, SLOT(onLoginDone()));
     connect(m_pOAuth2, SIGNAL(sigErrorOccured(QString)),this,SLOT(onErrorOccured(QString)));
     connect(&m_manager, SIGNAL(sigErrorOccured(QString)),this,SLOT(onErrorOccured(QString)));
+    connect(&m_manager, SIGNAL(sigUserEmailReady()),this,SLOT(onUserEmailReady()));
     connect(&m_manager, SIGNAL(sigBlogsListReady()),this,SLOT(onBlogsListReady()));
     connect(&m_manager, SIGNAL(sigPostsListReady()),this,SLOT(onPostsListReady()));
     connect(&m_manager, SIGNAL(sigCommentsListReady()),this,SLOT(onCommentsListReady()));
@@ -56,11 +57,9 @@ void Form::refreshBlogs()
 {
     onLoginDone();
 }
-/*! \brief Start function for initialization
- *
- */
-void Form::onLoginDone()
+void Form::onUserEmailReady()
 {
+    ui->userEmail->setText(m_manager.userEmail());
     //Now trying to get JSON string for bookshelves of the user.
     //Clear all widgets
     ui->webViewPost->setHtml("");
@@ -72,6 +71,14 @@ void Form::onLoginDone()
 
     m_manager.getBlogsList(m_pOAuth2->accessToken());
     m_manager.getBlogUsers(m_pOAuth2->accessToken());
+}
+
+/*! \brief Start function for initialization
+ *
+ */
+void Form::onLoginDone()
+{
+    m_manager.getUserEmail(m_pOAuth2->accessToken());
 }
 
 void Form::onErrorOccured(const QString& error)

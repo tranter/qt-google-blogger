@@ -51,9 +51,18 @@ void blogger_data_manager::getBlogUsers(const QString& access_token)
     m_pNetworkAccessManager->get(QNetworkRequest(QUrl(s)));
 }
 
+void blogger_data_manager::getUserEmail(const QString& access_token)
+{
+    QString query = QString("https://www.googleapis.com/oauth2/v1/userinfo"
+                            "?access_token=%1")
+            .arg(access_token);
+    m_pNetworkAccessManager->get(QNetworkRequest(QUrl(query)));
+}
+
 void blogger_data_manager::replyFinished(QNetworkReply *reply)
 {
     QString json = reply->readAll();
+    QString url = reply->url().toString();
 
     if (json.length() == 0) {
         return;
@@ -94,6 +103,10 @@ void blogger_data_manager::replyFinished(QNetworkReply *reply)
     } else if (result.toMap()["kind"] == "blogger#userList") {
         m_users = result.toMap()["items"].toList();
         emit sigUsersListReady();
+        return;
+    } else if (url.contains("userinfo")) {
+        m_strUserEmail = result.toMap()["email"].toString();
+        emit sigUserEmailReady();
         return;
     }
 }

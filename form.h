@@ -31,6 +31,7 @@ public slots:
 private slots:
     void onLoginDone();
     void onErrorOccured(const QString& error);
+    void onUserEmailReady();
     void onBlogsListReady();
     void onPostsListReady();
     void onCommentsListReady();

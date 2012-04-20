@@ -19,8 +19,15 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="userEmail">
+         <property name="text">
+          <string>Email not available</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
