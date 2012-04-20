@@ -13,12 +13,17 @@ Form::Form(QWidget *parent) :
 {
     ui->setupUi(this);
     m_pOAuth2 = new OAuth2(this);
-    m_strCompanyName = "ICS";
+    m_strCompanyName = "YOU_COMPANY_NAME_HERE";
     m_strAppName = "QtBlogger";
-    m_pOAuth2->setCompanyName(m_strCompanyName);
-    m_pOAuth2->setAppName(m_strAppName);
+
+    // Load settings
+    m_pSettings = new QSettings(m_strCompanyName,m_strAppName);
+    m_pOAuth2->setAccessToken(m_pSettings->value("access_token").toString());
+    m_pOAuth2->setRefreshToken(m_pSettings->value("refresh_token").toString());
+    m_pOAuth2->setSettings(m_pSettings);
 
     connect(m_pOAuth2, SIGNAL(loginDone()), this, SLOT(onLoginDone()));
+    connect(m_pOAuth2, SIGNAL(sigErrorOccured(QString)),this,SLOT(onErrorOccured(QString)));
     connect(&m_manager, SIGNAL(sigErrorOccured(QString)),this,SLOT(onErrorOccured(QString)));
     connect(&m_manager, SIGNAL(sigBlogsListReady()),this,SLOT(onBlogsListReady()));
     connect(&m_manager, SIGNAL(sigPostsListReady()),this,SLOT(onPostsListReady()));
@@ -30,10 +35,6 @@ Form::Form(QWidget *parent) :
     connect(ui->pagesListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(showPageContent(int)));
 
     QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, true);
-    // Load settings
-    m_pSettings = new QSettings(m_strCompanyName,m_strAppName);
-    m_pOAuth2->setAccessToken(m_pSettings->value("access_token").toString());
-    m_pOAuth2->setRefreshToken(m_pSettings->value("refresh_token").toString());
 }
 
 Form::~Form()
