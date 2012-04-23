@@ -80,7 +80,11 @@ void blogger_data_manager::replyFinished(QNetworkReply *reply)
     }
 
     if (result.toMap().contains("error")) {
-        emit sigErrorOccured(result.toMap()["error"].toMap()["message"].toString());
+        if (result.toMap()["error"].toMap()["message"].toString()=="Not Found") {
+            emit sigErrorOccured("Empty blogs list: probably you don't create any one.");
+        } else {
+            emit sigErrorOccured(result.toMap()["error"].toMap()["message"].toString());
+        }
         return;
     }
 
